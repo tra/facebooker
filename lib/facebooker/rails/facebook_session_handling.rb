@@ -24,14 +24,13 @@ end
 
 class CGI  
   class Session
-    private
       alias :initialize_aliased_by_facebooker :initialize
       attr_reader :request, :initialization_options
 
       def initialize(request, option={})
         @request = request
         @initialization_options = option
-        option['session_id'] = set_session_id
+        option['session_id'] ||= set_session_id
         initialize_aliased_by_facebooker(request, option)
       end
       

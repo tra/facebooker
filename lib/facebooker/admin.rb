@@ -15,8 +15,22 @@ module Facebooker
     # +properties+: Hash of properties you want to view.
     def get_app_properties(*properties)
       json = @session.post('facebook.admin.getAppProperties', :properties => properties.to_json)
-      hash = JSON.parse(CGI.unescapeHTML(json))
+      hash = Facebooker.json_decode(CGI.unescapeHTML(json))
       @properties = ApplicationProperties.from_hash(hash)
+    end
+    
+    # ** BETA ***
+    # +restrictions+: Hash of restrictions you want to set.
+    def set_restriction_info(restrictions)
+      restrictions = restrictions.respond_to?(:to_json) ? restrictions.to_json : restrictions
+      (@session.post 'facebook.admin.setRestrictionInfo', :restriction_str => restrictions) == '1'
+    end
+    
+    # ** BETA ***
+    def get_restriction_info(*restrictions)
+      json = @session.post('facebook.admin.getRestrictionInfo')
+      hash = Facebooker.json_decode(CGI.unescapeHTML(json))
+      @restrictions = ApplicationRestrictions.from_hash(hash)
     end
   
     # Integration points include..
